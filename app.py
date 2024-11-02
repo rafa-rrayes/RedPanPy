@@ -1,18 +1,18 @@
 # main.py
 
-from pyhtmlgui2 import PyHtmlGuiApp
+from redpanpy import RedPanPyApp
 
 def main():
     # Initialize the GUI with the path to your HTML file
-    app = PyHtmlGuiApp("/Users/Rafa/Python/RedPanPy/old/index.html")
+    app = RedPanPyApp("/Users/Rafa/Python/RedPanPy/index.html")
 
     # Define a callback function for the button click
     def on_button_click():
         print("Button clicked!")
         app.set_element_text("text1", "Button was clicked!")
     def on_button_click2():
-        print("Button 2 clicked!")
-        app.set_element_text("text1", "Button 2 was clicked!")
+        app.get_element_text("text1")
+        
     # Bind the click event of the button to the callback
     app.bind("myButton", "click", on_button_click)
     app.bind("myButton2", "click", on_button_click2)

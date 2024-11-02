@@ -25,7 +25,7 @@ class CallHandler(QObject):
         key = (element_id, event_type)
         self.callbacks[key] = callback
 
-class PyHtmlGuiApp:
+class RedPanPyApp:
     def __init__(self, html_path):
         self.app = QApplication(sys.argv)
         self.window = QMainWindow()
@@ -36,23 +36,26 @@ class PyHtmlGuiApp:
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl.fromLocalFile(html_path))
         self.window.setCentralWidget(self.browser)
-
+        
         # Create a QWebChannel and register the CallHandler
         self.channel = QWebChannel()
         self.handler = CallHandler()
         self.channel.registerObject('handler', self.handler)
 
         self.browser.page().setWebChannel(self.channel)
-
+        
         # Inject JavaScript code after the page has finished loading
         self.browser.page().loadFinished.connect(self.register_binds)
-
+        
         # Store binds and JavaScript commands to be registered after page load
         self.pending_binds = []
         self.pending_js = []
         self.page_loaded = False
 
     def register_binds(self):
+        with open('qwebchannel.js', 'r') as f:
+            js_code = f.read()
+        self.browser.page().runJavaScript(js_code)
         # Initialize the QWebChannel only once
         js_code = """
         if (typeof channelInitialized === 'undefined') {
@@ -116,10 +119,26 @@ class PyHtmlGuiApp:
         else:
             self.pending_js.append(js_code)
 
+    def get_element_value(self, element_id, callback):
+        """
+        Gets the value of an HTML input element by its ID.
+        """
+        js_code = f"""
+        (function() {{
+            var element = document.getElementById({json.dumps(element_id)});
+            if (element) {{
+                return element.value;
+            }} else {{
+                return null;
+            }}
+        }})();
+        """
+        self.browser.page().runJavaScript(js_code, callback)
+
     def get_element_text(self, element_id, callback):
         """
         Gets the innerHTML of an HTML element by its ID.
-        The result is passed to the provided callback function.
+        Returns the text directly by blocking until the result is available.
         """
         js_code = f"""
         (function() {{
@@ -132,7 +151,6 @@ class PyHtmlGuiApp:
         }})();
         """
         self.browser.page().runJavaScript(js_code, callback)
-
     def run(self):
         self.window.show()
         sys.exit(self.app.exec_())

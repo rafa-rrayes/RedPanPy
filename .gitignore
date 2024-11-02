@@ -1,2 +1,4 @@
 /RedPanPyVenv/
 /__pycache__/
+/build/
+/dist/
