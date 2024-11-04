@@ -1,8 +1,11 @@
-# RedPanPy Module Documentation
+# RedPanPy Documentation
 
 ## Introduction
 
+I hate Javascript. I hate it and I don't understand it. Maybe that's on me, I mean, it's definetly on me, but still. I can't stand the fact that at university I have to use it to build websites and wha- Ohhh! Okay, I may hate building this, but this sure does look a lot better then my Tkinter apps. That last realization was what motivated me to continue building websites even though I hated javascript. The customizability that HTML and CSS gives you is unmatched! It is so simple, so elegant and so practical. If only I could use it to build my python apps, without even having to touch Javascript... This is what RedPanPy does! (written by chatGPT from here onwards)
+
 The `RedPanPy` module provides a framework for creating desktop GUI applications using Python and HTML. It leverages PyQt5's `QWebEngineView` to render HTML content and enables communication between Python and JavaScript using `QWebChannel`. This allows developers to build the UI with familiar web technologies (HTML, CSS, JavaScript) and handle logic in Python.
+
 
 ---
 
@@ -25,8 +28,6 @@ The `RedPanPy` module provides a framework for creating desktop GUI applications
    - [Handling Timers and Real-Time Updates](#handling-timers-and-real-time-updates)
 7. [Security Considerations](#security-considerations)
 8. [Conclusion](#conclusion)
-9. [Appendix](#appendix)
-   - [Adding `qwebchannel.js`](#adding-qwebchanneljs)
 
 ---
 
@@ -36,6 +37,12 @@ Before using the `RedPanPy` module, ensure that you have the necessary dependenc
 
 ```bash
 pip install PyQt5 PyQtWebEngine
+```
+
+After that, you can install the `RedPanPy` module using:
+
+```bash
+pip install redpanpy
 ```
 
 ---
@@ -81,6 +88,8 @@ RedPanPyApp(html_path)
 
 - `bind(element_id, event_type, callback)`: Binds an event of an HTML element to a Python callback function.
 - `set_element_text(element_id, text)`: Sets the `innerHTML` of an HTML element.
+- `set_element_value(element_id, value)`: Sets the `value` of an HTML element.
+
 - `get_element_text(element_id, callback)`: Retrieves the `innerHTML` of an HTML element.
 - `get_element_value(element_id, callback)`: Retrieves the `value` of an HTML input element.
 - `run()`: Starts the PyQt application and displays the window.
@@ -323,39 +332,6 @@ When using methods like `eval()` to execute code based on user input, there are 
 ## Conclusion
 
 The `RedPanPy` module allows you to create rich GUI applications using web technologies for the UI and Python for the logic. By understanding how to bind events, manipulate HTML elements, and interact between Python and JavaScript, you can build powerful desktop applications.
-
----
-
-## Appendix
-
-### Adding `qwebchannel.js`
-
-To enable communication between Python and JavaScript, PyQt uses `qwebchannel.js`. Ensure that this file is available and loaded in your HTML.
-
-**Steps:**
-
-1. Locate `qwebchannel.js` in your PyQt installation directory, usually under `PythonXY/Lib/site-packages/PyQt5/Qt5/qml/QtWebChannel`.
-2. Copy `qwebchannel.js` to your project directory or make sure your code can access it.
-3. In `RedPanPyApp.register_binds()`, the code reads `qwebchannel.js` and injects it into the web page.
-
-**Code Snippet:**
-
-```python
-def register_binds(self):
-    with open('qwebchannel.js', 'r') as f:
-        js_code = f.read()
-    self.browser.page().runJavaScript(js_code)
-    # Initialize the QWebChannel
-    js_code = """
-    if (typeof channelInitialized === 'undefined') {
-        channelInitialized = true;
-        new QWebChannel(qt.webChannelTransport, function(channel) {
-            window.handler = channel.objects.handler;
-        });
-    }
-    """
-    self.browser.page().runJavaScript(js_code)
-```
 
 ---
 
