@@ -1,9 +1,9 @@
-from panpy import RedPanPyApp
+from RedPanPy import RedPanPyApp
 from PyQt5.QtCore import QTimer
 from datetime import datetime
 
 def main():
-    app = RedPanPyApp("/Examples/AgeClock/index.html", title="Age Clock", width=800, height=1000)
+    app = RedPanPyApp("/AgeClock/index.html", title="Age Clock", width=800, height=1000)
 
     theme_2 = {"background": "linear-gradient(90deg, rgba(50,70,200,1) 0%, rgba(150,150,0,1) 50%, rgba(0,176,150,1) 100%)"}
     theme_1 = {"background": "linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%)"}
@@ -45,7 +45,8 @@ def main():
             else:
                 app.set_element_text('age', 'Please enter birthdate')
         app.get_element_value('birthdate', callback)
-
+        
+    @app.bind('birthdate', 'input')
     def on_birthdate_input():
         update_age_display()
         # Start a timer to update every 50 milliseconds
@@ -55,6 +56,7 @@ def main():
             app.age_timer.timeout.connect(update_age_display)
             app.age_timer.start(50)
 
+    @app.bind('theme', 'click')
     def on_theme_click():
         global active_theme
         
@@ -65,9 +67,6 @@ def main():
             app.set_element_style('body', theme_1)
             active_theme = 1
         app.show_alert('Theme changed!')
-    # Bind the 'input' event of the 'birthdate' element
-    app.bind('birthdate', 'input', on_birthdate_input)
-    app.bind('theme', 'click', on_theme_click)
 
     # Run the application
     app.run()

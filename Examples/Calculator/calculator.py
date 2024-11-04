@@ -2,7 +2,7 @@ from RedPanPy import RedPanPyApp
 
 def main():
     # Initialize the GUI with the path to your HTML file
-    app = RedPanPyApp("Examples/Calculator/calculator.html")
+    app = RedPanPyApp("/Examples/Calculator/calculator.html", title="Calculator", width=300, height=500)
     expression = {'value': ''}  # Using a dict to allow inner functions to modify the variable
 
     # Function to update the calculator display
@@ -25,10 +25,12 @@ def main():
         return callback
 
     # Callback for the clear button
+    @app.bind("btnClear", "click")
     def on_clear_click():
         expression['value'] = ''
         update_display()
     # Callback for the equal button
+    @app.bind("btnEqual", "click")
     def on_equal_click():
         try:
             # Evaluate the expression safely
@@ -39,22 +41,15 @@ def main():
         update_display()        
     # Bind number buttons (0-9)
     for num in range(0, 10):
-        app.bind(f"btn{num}", "click", on_number_click(num))
+        app.bind_specific(f"btn{num}", "click", on_number_click(num))
 
     # Bind operator buttons
-    app.bind("btnAdd", "click", on_operator_click('+'))
-    app.bind("btnSub", "click", on_operator_click('-'))
-    app.bind("btnMul", "click", on_operator_click('*'))
-    app.bind("btnDiv", "click", on_operator_click('/'))
-    app.bind("btnDot", "click", on_operator_click('.'))
+    app.bind_specific("btnAdd", "click", on_operator_click('+'))
+    app.bind_specific("btnSub", "click", on_operator_click('-'))
+    app.bind_specific("btnMul", "click", on_operator_click('*'))
+    app.bind_specific("btnDiv", "click", on_operator_click('/'))
+    app.bind_specific("btnDot", "click", on_operator_click('.'))
 
-    # Bind the equal button
-    app.bind("btnEqual", "click", on_equal_click)
-
-    # Bind the clear button
-    app.bind("btnClear", "click", on_clear_click)
-
-    app.bind("btnTheme", "click", on_theme_click)
 
     # Initialize the display
     update_display()

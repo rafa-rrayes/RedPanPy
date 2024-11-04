@@ -21,13 +21,11 @@ The `RedPanPy` module provides a framework for creating desktop GUI applications
    - [Binding Events](#binding-events)
    - [Manipulating HTML Elements](#manipulating-html-elements)
    - [Getting Element Values](#getting-element-values)
+   - [Handling Timers and Real-Time Updates](#handling-timers-and-real-time-updates)
    - [Running the Application](#running-the-application)
 5. [Full Example](#full-example)
-6. [Advanced Usage](#advanced-usage)
-   - [Using Decorators for Binding](#using-decorators-for-binding)
-   - [Handling Timers and Real-Time Updates](#handling-timers-and-real-time-updates)
-7. [Security Considerations](#security-considerations)
-8. [Conclusion](#conclusion)
+6. [Security Considerations](#security-considerations)
+7. [Conclusion](#conclusion)
 
 ---
 
@@ -85,13 +83,22 @@ RedPanPyApp(html_path)
 - `html_path`: Path to the HTML file to be loaded in the application.
 
 **Methods:**
-
-- `bind(element_id, event_type, callback)`: Binds an event of an HTML element to a Python callback function.
+- `set_element_style(element_id, style_dict): Sets the style of an HTML element.
+- `console_log(message)`: Logs a message to the browser console.
+- `show_alert(message)`: Displays an alert dialog in the app
+- `show_confirm(message, callback)`: Displays a confirmation dialog.
+- `show_prompt(message, default_value, callback)`: Displays a prompt dialog.
+- `add_class(element_id, class_name)`: Adds a CSS class to an HTML element.
+- `remove_class(element_id, class_name)`: Removes a CSS class from an HTML element.
+- `run_javascript(js_code)`: Runs JavaScript code
+- `run_js_file(file_path)`: Runs a JavaScript file 
+- `load_css_file(file_path)`: Loads a CSS file
+- `bind(element_id, event_type)`: Decorator - Binds an event of an HTML element to the function you are decorating.
+- `bind_specific(element_id, event_type, callback)`: Binds an event of an HTML element to a Python callback function.
 - `set_element_text(element_id, text)`: Sets the `innerHTML` of an HTML element.
 - `set_element_value(element_id, value)`: Sets the `value` of an HTML element.
-
-- `get_element_text(element_id, callback)`: Retrieves the `innerHTML` of an HTML element.
-- `get_element_value(element_id, callback)`: Retrieves the `value` of an HTML input element.
+- `get_element_text(element_id, callback)`: Retrieves the `innerHTML` of an HTML element, the result is passed to the callback function.
+- `get_element_value(element_id, callback)`: Retrieves the `value` of an HTML input element, the result is passed to the callback function.
 - `run()`: Starts the PyQt application and displays the window.
 
 ### `CallHandler` Class
@@ -122,20 +129,23 @@ This will:
 - Load the specified HTML file into a `QWebEngineView`.
 - Set up the communication channel between Python and JavaScript.
 
+You can define the tittle and geometry of your window:
+
+```python
+app = RedPanPyApp("index.html", title='Hello', width=500, height=500)
+```
 ### Binding Events
 
 To respond to events from HTML elements (e.g., button clicks), you can bind them to Python functions using the `bind` method:
 
 ```python
+@app.bind("myButton", "click")
 def on_button_click():
     print("Button was clicked!")
-
-app.bind("myButton", "click", on_button_click)
 ```
 
 - `element_id`: The `id` attribute of the HTML element.
 - `event_type`: The type of event (e.g., `"click"`, `"input"`).
-- `callback`: The Python function to be called when the event occurs.
 
 **Example:**
 
@@ -148,10 +158,29 @@ In your HTML:
 In Python:
 
 ```python
+@app.bind("myButton", "click")
 def on_button_click():
     print("Button was clicked!")
 
-app.bind("myButton", "click", on_button_click)
+@app.bind_specific("name", "input") 
+def on_name_input():
+    def greet(name):
+        app.console_log(f"Hello, {name}")
+    app.get_element_value('name', callback)
+
+```
+You can also use the bind_specific method. It is not a decorator and it receives the callback function:
+```python
+def on_button_click():
+    print("Button was clicked!")
+@app.bind_specific("myButton", "click", on_button_click)
+```
+
+You can use this to bind functions with specific arguments to buttons. For example:
+```python
+app.bind_specific("btnAdd", "click", on_operator_click('+'))
+app.bind_specific("btnSub", "click", on_operator_click('-')) 
+
 ```
 
 ### Manipulating HTML Elements
@@ -251,19 +280,16 @@ from RedPanPy import RedPanPyApp
 def main():
     app = RedPanPyApp("index.html")
 
+    @app.bind("myButton", "click")
     def on_button_click():
         print("Button clicked!")
         app.set_element_text("message", "Button was clicked!")
-
+    @app.bind("myInput", "input")
     def on_input_change():
         def handle_value(value):
             print("Input changed to:", value)
             app.set_element_text("message", f"You typed: {value}")
         app.get_element_value("myInput", handle_value)
-
-    app.bind("myButton", "click", on_button_click)
-    app.bind("myInput", "input", on_input_change)
-
     app.run()
 
 if __name__ == "__main__":
@@ -278,25 +304,6 @@ if __name__ == "__main__":
 
 ---
 
-## Advanced Usage
-
-### Using Decorators for Binding
-
-To simplify event binding, you can use decorators. Here's how you might modify your code:
-
-```python
-def bind(element_id, event_type):
-    def decorator(func):
-        app.bind(element_id, event_type, func)
-        return func
-    return decorator
-
-@bind("myButton", "click")
-def on_button_click():
-    print("Button clicked!")
-```
-
-This approach keeps the binding close to the function definition and can make the code cleaner.
 
 ### Handling Timers and Real-Time Updates
 
@@ -347,6 +354,9 @@ RedPanPyApp(html_path)
 
 - **Parameters:**
   - `html_path` (str): Path to the HTML file to be loaded.
+  - `title` (str): Title of the window.
+  - `width` (int): Width of the window.
+  - `height` (int): Height of the window.
 
 #### Methods
 
@@ -456,7 +466,21 @@ Registers a callback function for a specific element and event.
 **Note:** The `CallHandler` class is typically not used directly. Instead, use the `bind` method of `RedPanPyApp` to register event handlers.
 
 ---
+### Building an executable
 
+If you want to build an executable file, you can use `PyInstaller` to package your application.
+To do so, you must first install `PyInstaller`:
+
+```bash
+pip install pyinstaller
+```
+
+Then, you can create an executable file using:
+
+```bash
+pyinstaller YOUR_SCRIPT.py --add-data qwebchannel.js:RedPanPy --noconsole --icon icon.icns
+```
+Substitute `YOUR_SCRIPT.py` with the name of your script and `icon.icns` with the path to your icon file. You must also have a copy of the `qwebchannel.js` file in the same directory as your script.
 ## Final Remarks
 
 By following this documentation, you should be able to:
@@ -465,8 +489,7 @@ By following this documentation, you should be able to:
 - Bind HTML element events to Python functions.
 - Manipulate the HTML content from Python.
 - Retrieve values from HTML input elements.
-- Utilize advanced features like decorators and timers.
+- Build complete and beautiful desktop applications using Python and HTML.
 
-Remember to always keep security in mind when dealing with user inputs and executing code.
 
 Happy coding with `RedPanPy`!

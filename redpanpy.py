@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from PyQt5.QtWebChannel import QWebChannel
 from PyQt5.QtCore import QUrl, QObject, pyqtSlot
-
 class CustomWebEnginePage(QWebEnginePage):
     def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
         print(f"JavaScript console [{level}] Line {lineNumber}: {message}")
@@ -62,7 +61,7 @@ class RedPanPyApp:
         self.page_loaded = False
 
     def register_binds(self):
-        with open('qwebchannel.js', 'r') as f:
+        with open("qwebchannel.js", 'r') as f:
             js_code = f.read()
         self.browser.page().runJavaScript(js_code)
         # Initialize the QWebChannel only once
@@ -88,7 +87,7 @@ class RedPanPyApp:
 
         self.page_loaded = True
 
-    def bind(self, element_id, event_type, callback):
+    def bind_specific(self, element_id, event_type, callback):
         # Register the callback in CallHandler
         self.handler.register_callback(element_id, event_type, callback)
         # If the page has not loaded yet, store the bind to register later
@@ -237,7 +236,7 @@ class RedPanPyApp:
         }})();
         """
         self.browser.page().runJavaScript(js_code)
-    def load_js_file(self, file_path):
+    def run_js_file(self, file_path):
         with open(file_path, 'r') as f:
             js_code = f.read()
         self.run_javascript(js_code)
@@ -256,3 +255,14 @@ class RedPanPyApp:
     def run(self):
         self.window.show()
         sys.exit(self.app.exec_())
+    def bind(self, element_id, event_type):
+        def decorator(func):
+                # Register the callback in CallHandler
+            self.handler.register_callback(element_id, event_type, func)
+            # If the page has not loaded yet, store the bind to register later
+            if self.page_loaded:
+                self._bind_js(element_id, event_type)
+            else:
+                self.pending_binds.append((element_id, event_type))
+            return func
+        return decorator
