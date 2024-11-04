@@ -1,8 +1,8 @@
-# PyHtmlGui Module Documentation
+# RedPanPy Module Documentation
 
 ## Introduction
 
-The `PyHtmlGui` module provides a framework for creating desktop GUI applications using Python and HTML. It leverages PyQt5's `QWebEngineView` to render HTML content and enables communication between Python and JavaScript using `QWebChannel`. This allows developers to build the UI with familiar web technologies (HTML, CSS, JavaScript) and handle logic in Python.
+The `RedPanPy` module provides a framework for creating desktop GUI applications using Python and HTML. It leverages PyQt5's `QWebEngineView` to render HTML content and enables communication between Python and JavaScript using `QWebChannel`. This allows developers to build the UI with familiar web technologies (HTML, CSS, JavaScript) and handle logic in Python.
 
 ---
 
@@ -32,7 +32,7 @@ The `PyHtmlGui` module provides a framework for creating desktop GUI application
 
 ## Installation
 
-Before using the `PyHtmlGui` module, ensure that you have the necessary dependencies installed:
+Before using the `RedPanPy` module, ensure that you have the necessary dependencies installed:
 
 ```bash
 pip install PyQt5 PyQtWebEngine
@@ -45,7 +45,7 @@ pip install PyQt5 PyQtWebEngine
 Here's a minimal example to get you started:
 
 ```python
-from pyhtmlgui import RedPanPyApp
+from RedPanPy import RedPanPyApp
 
 def main():
     app = RedPanPyApp("index.html")
@@ -100,7 +100,7 @@ An internal class that handles interactions from JavaScript. It registers callba
 
 ### Initializing the Application
 
-To start using `PyHtmlGui`, you need to create an instance of `RedPanPyApp` with the path to your HTML file:
+To start using `RedPanPy`, you need to create an instance of `RedPanPyApp` with the path to your HTML file:
 
 ```python
 app = RedPanPyApp("index.html")
@@ -167,7 +167,7 @@ In your HTML:
 In Python:
 
 ```python
-app.set_element_text("message", "Welcome to PyHtmlGui!")
+app.set_element_text("message", "Welcome to RedPanPy!")
 ```
 
 ### Getting Element Values
@@ -224,7 +224,7 @@ Here's a complete example that ties everything together.
 <html>
 <head>
     <meta charset="utf-8">
-    <title>PyHtmlGui Example</title>
+    <title>RedPanPy Example</title>
 </head>
 <body>
     <h1 id="message">Hello!</h1>
@@ -237,7 +237,7 @@ Here's a complete example that ties everything together.
 ### main.py
 
 ```python
-from pyhtmlgui import RedPanPyApp
+from RedPanPy import RedPanPyApp
 
 def main():
     app = RedPanPyApp("index.html")
@@ -322,7 +322,7 @@ When using methods like `eval()` to execute code based on user input, there are 
 
 ## Conclusion
 
-The `PyHtmlGui` module allows you to create rich GUI applications using web technologies for the UI and Python for the logic. By understanding how to bind events, manipulate HTML elements, and interact between Python and JavaScript, you can build powerful desktop applications.
+The `RedPanPy` module allows you to create rich GUI applications using web technologies for the UI and Python for the logic. By understanding how to bind events, manipulate HTML elements, and interact between Python and JavaScript, you can build powerful desktop applications.
 
 ---
 
@@ -485,7 +485,7 @@ Registers a callback function for a specific element and event.
 
 By following this documentation, you should be able to:
 
-- Set up a basic GUI application using `PyHtmlGui`.
+- Set up a basic GUI application using `RedPanPy`.
 - Bind HTML element events to Python functions.
 - Manipulate the HTML content from Python.
 - Retrieve values from HTML input elements.
@@ -493,4 +493,4 @@ By following this documentation, you should be able to:
 
 Remember to always keep security in mind when dealing with user inputs and executing code.
 
-Happy coding with `PyHtmlGui`!
+Happy coding with `RedPanPy`!

@@ -1,4 +1,4 @@
-from redpanpy import RedPanPyApp
+from RedPanPy import RedPanPyApp
 from PyQt5.QtCore import QTimer
 from datetime import datetime
 

@@ -1,5 +1,4 @@
-# pyhtmlgui.py
-
+# RedPanPy.py
 import sys
 import json
 from PyQt5.QtWidgets import QApplication, QMainWindow
@@ -26,12 +25,16 @@ class CallHandler(QObject):
         self.callbacks[key] = callback
 
 class RedPanPyApp:
-    def __init__(self, html_path):
+    def __init__(self, html_path, *args, **kwargs):
+        title = kwargs.get('title', 'RedPanPy App')
+        width = kwargs.get('width', 800)
+        height = kwargs.get('height', 600)
+
         self.app = QApplication(sys.argv)
         self.window = QMainWindow()
-        self.window.setWindowTitle("PyHtmlGui App")
-        self.window.setGeometry(100, 100, 800, 600)
-
+        self.window.setWindowTitle(title)
+        self.window.setGeometry(100, 100, width, height)
+    
         # Create a web engine view and load the HTML file
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl.fromLocalFile(html_path))
@@ -118,7 +121,22 @@ class RedPanPyApp:
             self.browser.page().runJavaScript(js_code)
         else:
             self.pending_js.append(js_code)
-
+    def set_element_value(self, element_id, value):
+        """
+        Sets the innerHTML of an HTML element by its ID.
+        """
+        js_code = f"""
+        (function() {{
+            var element = document.getElementById({json.dumps(element_id)});
+            if (element) {{
+                element.value = {json.dumps(value)};
+            }}
+        }})();
+        """
+        if self.page_loaded:
+            self.browser.page().runJavaScript(js_code)
+        else:
+            self.pending_js.append(js_code)
     def get_element_value(self, element_id, callback):
         """
         Gets the value of an HTML input element by its ID.

@@ -1,4 +1,4 @@
-from redpanpy import RedPanPyApp
+from RedPanPy import RedPanPyApp
 
 def main():
     # Initialize the GUI with the path to your HTML file
