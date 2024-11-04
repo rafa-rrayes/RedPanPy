@@ -1,8 +1,9 @@
-# RedPanPy Module Documentation
+# RedPanPy Documentation
 
 ## Introduction
 
-The `RedPanPy` module provides a framework for creating desktop GUI applications using Python and HTML. It leverages PyQt5's `QWebEngineView` to render HTML content and enables communication between Python and JavaScript using `QWebChannel`. This allows developers to build the UI with familiar web technologies (HTML, CSS, JavaScript) and handle logic in Python.
+I hate Javascript. I hate it and I don't understand it. Maybe that's on me, I mean, it's definetly on me, but still. I can't stand the fact that at university I have to use it to build websites and wha- Ohhh! Okay, I may hate building this, but this sure does look a lot better then my Tkinter apps. That last realization was what motivated me to continue building websites even though I hated javascript. The customizability that HTML and CSS gives you is unmatched! It is so simple, so elegant and so practical. If only I could use it to build my python apps, without even having to touch Javascript... This is what RedPanPy does! (written by chatGPT from here onwards) The `RedPanPy` module provides a framework for creating desktop GUI applications using Python and HTML. It leverages PyQt5's `QWebEngineView` to render HTML content and enables communication between Python and JavaScript using `QWebChannel`. This allows developers to build the UI with familiar web technologies (HTML, CSS, JavaScript) and handle logic in Python.
+
 
 ---
 
