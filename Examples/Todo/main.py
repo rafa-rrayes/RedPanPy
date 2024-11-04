@@ -1,7 +1,7 @@
 from RedPanPy import RedPanPyApp
 
 def main():
-    app = RedPanPyApp("/Users/Rafa/Python/RedPanPy/plotter.html")
+    app = RedPanPyApp("Examples/Todo/index.html")
 
     tasks = []
 

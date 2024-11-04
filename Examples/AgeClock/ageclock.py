@@ -3,7 +3,7 @@ from PyQt5.QtCore import QTimer
 from datetime import datetime
 
 def main():
-    app = RedPanPyApp("/Users/Rafa/Python/RedPanPy/ageclock.html")
+    app = RedPanPyApp("Examples/AgeClock/ageclock.html")
 
     def get_age_in_years(birthdate):
         now = datetime.now()

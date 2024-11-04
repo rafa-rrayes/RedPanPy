@@ -1,4 +1,3 @@
-.gitignore
 /RedPanPyVenv/
 /__pycache__/
 /build/

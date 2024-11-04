@@ -2,12 +2,12 @@ from RedPanPy import RedPanPyApp
 
 def main():
     # Initialize the GUI with the path to your HTML file
-    app = RedPanPyApp("/Users/Rafa/Python/RedPanPy/calculator.html")
+    app = RedPanPyApp("Examples/Calculator/calculator.html")
     expression = {'value': ''}  # Using a dict to allow inner functions to modify the variable
 
     # Function to update the calculator display
     def update_display():
-        app.set_element_text("display", expression['value'])
+        app.set_element_value("display", expression['value'])
 
     # Callback factory for number buttons
     def on_number_click(num):
@@ -28,7 +28,6 @@ def main():
     def on_clear_click():
         expression['value'] = ''
         update_display()
-
     # Callback for the equal button
     def on_equal_click():
         try:
@@ -55,6 +54,8 @@ def main():
 
     # Bind the clear button
     app.bind("btnClear", "click", on_clear_click)
+
+    app.bind("btnTheme", "click", on_theme_click)
 
     # Initialize the display
     update_display()
