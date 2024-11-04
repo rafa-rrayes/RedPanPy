@@ -81,6 +81,8 @@ RedPanPyApp(html_path)
 
 - `bind(element_id, event_type, callback)`: Binds an event of an HTML element to a Python callback function.
 - `set_element_text(element_id, text)`: Sets the `innerHTML` of an HTML element.
+- `set_element_value(element_id, value)`: Sets the `value` of an HTML element.
+
 - `get_element_text(element_id, callback)`: Retrieves the `innerHTML` of an HTML element.
 - `get_element_value(element_id, callback)`: Retrieves the `value` of an HTML input element.
 - `run()`: Starts the PyQt application and displays the window.
