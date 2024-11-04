@@ -3,6 +3,7 @@ body{
     align-items: center;
     display: flex;
     flex-direction: column;
+
 }
 h1 {
     font-family:'Courier New', Courier, monospace;
@@ -19,6 +20,8 @@ input {
     border-radius: 10px;
     color: azure;
     font-size: 200%;
+    outline: none;
+
 }
 p {
     color: azure;
@@ -26,4 +29,20 @@ p {
     font-size: 50px;
     margin-top: 200px;
     text-align: center;
+}
+
+#theme {
+    background-color: transparent;
+    border: 2px solid azure;
+    border-radius: 10px;
+    color: azure;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    width: 100px;
+    outline: none;
 }

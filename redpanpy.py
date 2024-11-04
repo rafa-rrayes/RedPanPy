@@ -2,9 +2,13 @@
 import sys
 import json
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from PyQt5.QtWebChannel import QWebChannel
 from PyQt5.QtCore import QUrl, QObject, pyqtSlot
+
+class CustomWebEnginePage(QWebEnginePage):
+    def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
+        print(f"JavaScript console [{level}] Line {lineNumber}: {message}")
 
 class CallHandler(QObject):
     """
@@ -37,6 +41,9 @@ class RedPanPyApp:
     
         # Create a web engine view and load the HTML file
         self.browser = QWebEngineView()
+        self.page = CustomWebEnginePage()
+        self.browser.setPage(self.page)
+
         self.browser.setUrl(QUrl.fromLocalFile(html_path))
         self.window.setCentralWidget(self.browser)
         
@@ -44,7 +51,6 @@ class RedPanPyApp:
         self.channel = QWebChannel()
         self.handler = CallHandler()
         self.channel.registerObject('handler', self.handler)
-
         self.browser.page().setWebChannel(self.channel)
         
         # Inject JavaScript code after the page has finished loading
@@ -169,6 +175,84 @@ class RedPanPyApp:
         }})();
         """
         self.browser.page().runJavaScript(js_code, callback)
+    def set_element_style(self, element_id, style_dict):
+        style_str = "; ".join([f"{key}: {value}" for key, value in style_dict.items()])
+        js_code = f"""
+        (function() {{
+            var element = document.getElementById({json.dumps(element_id)});
+            if (element) {{
+                element.style.cssText = {json.dumps(style_str)};
+            }}
+        }})();
+        """
+        self.browser.page().runJavaScript(js_code)
+    def show_alert(self, message):
+        js_code = f"alert({json.dumps(message)});"
+        self.browser.page().runJavaScript(js_code)
+
+    def show_confirm(self, message, callback):
+        js_code = f"confirm({json.dumps(message)});"
+        self.browser.page().runJavaScript(js_code, callback)
+
+    def show_prompt(self, message, default_value, callback):
+        js_code = f"prompt({json.dumps(message)}, {json.dumps(default_value)});"
+        self.browser.page().runJavaScript(js_code, callback)
+
+    def run_javascript(self, js_code, callback=None):
+        """
+        Run arbitrary JavaScript and optionally pass a callback to handle the result.
+        """
+        if not callback:
+            callback = lambda result: None
+        if self.page_loaded:
+            self.browser.page().runJavaScript(js_code, callback)
+        else:
+            self.pending_js.append(js_code)
+    def console_log(self, message):
+        """
+        Log a message to the JavaScript console.
+        """
+        js_code = f"console.log({json.dumps(message)});"
+        if self.page_loaded:
+            self.browser.page().runJavaScript(js_code)
+        else:
+            self.pending_js.append(js_code)
+    def add_class(self, element_id, class_name):
+        js_code = f"""
+        (function() {{
+            var element = document.getElementById({json.dumps(element_id)});
+            if (element && !element.classList.contains({json.dumps(class_name)})) {{
+                element.classList.add({json.dumps(class_name)});
+            }}
+        }})();
+        """
+        self.browser.page().runJavaScript(js_code)
+    def remove_class(self, element_id, class_name):
+        js_code = f"""
+        (function() {{
+            var element = document.getElementById({json.dumps(element_id)});
+            if (element && element.classList.contains({json.dumps(class_name)})) {{
+                element.classList.remove({json.dumps(class_name)});
+            }}
+        }})();
+        """
+        self.browser.page().runJavaScript(js_code)
+    def load_js_file(self, file_path):
+        with open(file_path, 'r') as f:
+            js_code = f.read()
+        self.run_javascript(js_code)
+
+    def load_css_file(self, file_path):
+        with open(file_path, 'r') as f:
+            css_code = f.read()
+        js_code = f"""
+        (function() {{
+            var style = document.createElement('style');
+            style.innerHTML = {json.dumps(css_code)};
+            document.head.appendChild(style);
+        }})();
+        """
+        self.browser.page().runJavaScript(js_code)
     def run(self):
         self.window.show()
         sys.exit(self.app.exec_())

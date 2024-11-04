@@ -36,8 +36,7 @@ def main():
             expression['value'] = result
         except Exception:
             expression['value'] = 'Error'
-        update_display()
-
+        update_display()        
     # Bind number buttons (0-9)
     for num in range(0, 10):
         app.bind(f"btn{num}", "click", on_number_click(num))
