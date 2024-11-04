@@ -25,8 +25,6 @@ The `RedPanPy` module provides a framework for creating desktop GUI applications
    - [Handling Timers and Real-Time Updates](#handling-timers-and-real-time-updates)
 7. [Security Considerations](#security-considerations)
 8. [Conclusion](#conclusion)
-9. [Appendix](#appendix)
-   - [Adding `qwebchannel.js`](#adding-qwebchanneljs)
 
 ---
 
@@ -331,39 +329,6 @@ When using methods like `eval()` to execute code based on user input, there are 
 ## Conclusion
 
 The `RedPanPy` module allows you to create rich GUI applications using web technologies for the UI and Python for the logic. By understanding how to bind events, manipulate HTML elements, and interact between Python and JavaScript, you can build powerful desktop applications.
-
----
-
-## Appendix
-
-### Adding `qwebchannel.js`
-
-To enable communication between Python and JavaScript, PyQt uses `qwebchannel.js`. Ensure that this file is available and loaded in your HTML.
-
-**Steps:**
-
-1. Locate `qwebchannel.js` in your PyQt installation directory, usually under `PythonXY/Lib/site-packages/PyQt5/Qt5/qml/QtWebChannel`.
-2. Copy `qwebchannel.js` to your project directory or make sure your code can access it.
-3. In `RedPanPyApp.register_binds()`, the code reads `qwebchannel.js` and injects it into the web page.
-
-**Code Snippet:**
-
-```python
-def register_binds(self):
-    with open('qwebchannel.js', 'r') as f:
-        js_code = f.read()
-    self.browser.page().runJavaScript(js_code)
-    # Initialize the QWebChannel
-    js_code = """
-    if (typeof channelInitialized === 'undefined') {
-        channelInitialized = true;
-        new QWebChannel(qt.webChannelTransport, function(channel) {
-            window.handler = channel.objects.handler;
-        });
-    }
-    """
-    self.browser.page().runJavaScript(js_code)
-```
 
 ---
 
