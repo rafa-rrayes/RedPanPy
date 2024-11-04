@@ -38,6 +38,12 @@ Before using the `RedPanPy` module, ensure that you have the necessary dependenc
 pip install PyQt5 PyQtWebEngine
 ```
 
+After that, you can install the `RedPanPy` module using:
+
+```bash
+pip install redpanpy
+```
+
 ---
 
 ## Quick Start
